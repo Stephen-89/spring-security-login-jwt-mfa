@@ -48,6 +48,7 @@ public class UserServiceImpl implements UserService {
 		newUser.setAccountNonExpired(Boolean.TRUE);
 		newUser.setAccountNonLocked(Boolean.TRUE);
 		newUser.setEnabled(Boolean.TRUE);
+		newUser.setMfaEnabled(Boolean.FALSE);
 		newUser.setRoles(Arrays.asList(new Role(2l, "ROLE_USER")));
 		return userRepository.save(newUser);
 	}

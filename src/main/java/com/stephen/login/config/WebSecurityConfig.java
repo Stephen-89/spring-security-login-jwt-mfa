@@ -17,7 +17,7 @@ import com.stephen.login.security.JwtRequestFilter;
 
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-	
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
@@ -25,7 +25,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.csrf().disable()
 			.authorizeRequests()
 			.expressionHandler(customWebSecurityExpressionHandler())
-			.antMatchers("/accounts", "/accounts-balance", "/accounts-savings-goal", "/login", "/register", "/verfiy-code", "/update-message-queue", "/actuator/**").permitAll()
+			.antMatchers("/**", "/actuator/**").permitAll()
 			.anyRequest().authenticated()
 			.and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -33,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.httpBasic();
 	
 	}
-
+	
 	@Bean
 	public JwtRequestFilter authenticationJwtTokenFilter() {
 		return new JwtRequestFilter();
