@@ -12,11 +12,11 @@
 	
 	<groupId>com.stephen</groupId>
 
-	<artifactId>spring-security-login-jwt</artifactId>
+	<artifactId>spring-security-login-jwt-mfa</artifactId>
 
 	<version>0.0.1</version>
 
-	<name>spring-security-login-jwt</name>
+	<name>spring-security-login-jwt-mfa</name>
 
 	<description>Spring Boot REST API for Login</description>
 
@@ -112,7 +112,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>spring-security-login-jwt</finalName>
+		<finalName>spring-security-login-jwt-mfa</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
