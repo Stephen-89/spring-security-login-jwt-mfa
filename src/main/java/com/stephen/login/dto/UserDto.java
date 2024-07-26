@@ -21,7 +21,7 @@ public class UserDto {
 	private String username;
 	
 	@NotNull(message = "Password should not be empty")
-	@Size(min = 5, message = "Password should be atleast 5 characters")
+	@Size(min = 6, message = "Password should be at least 6 characters")
 	private String password;
 	
 	private boolean accountNonExpired;
@@ -31,7 +31,5 @@ public class UserDto {
 	private boolean credentialsNonExpired;
 	
 	private boolean enabled;
-	
-	private String code;
 	
 }

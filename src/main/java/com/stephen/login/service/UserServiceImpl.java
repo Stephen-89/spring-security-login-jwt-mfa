@@ -7,7 +7,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,7 +18,7 @@ import com.stephen.login.constants.Constants;
 import com.stephen.login.dto.UserDto;
 import com.stephen.login.entity.Role;
 import com.stephen.login.entity.User;
-import com.stephen.login.exceptions.UserExistsException;
+import com.stephen.login.exceptions.user.UserExistsException;
 import com.stephen.login.repository.UserRepository;
 
 @Service
@@ -27,18 +26,19 @@ public class UserServiceImpl implements UserService {
 	
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 	
-	@Autowired
 	private PasswordEncoder bcryptEncoder;
-	
-	@Autowired
 	private UserRepository userRepository;
-	
-	@Autowired
     private JmsTemplate jmsTemplate;
 	
+	public UserServiceImpl(PasswordEncoder bcryptEncoder, UserRepository userRepository, JmsTemplate jmsTemplate) {
+		this.bcryptEncoder = bcryptEncoder;
+		this.userRepository = userRepository;
+		this.jmsTemplate = jmsTemplate;
+	}
+
 	@Override
 	public User createUser(UserDto user) {
-		if (userRepository.existsByUsername(user.getUsername())) {
+		if (Boolean.TRUE.equals(userRepository.existsByUsername(user.getUsername()))) {
 			throw new UserExistsException("User is already registered with username: " + user.getUsername());
 		}
 		User newUser = new User();
@@ -54,14 +54,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User readUser() {
-		Long userId = getLoggedInUser().getId();
-		return userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found for the id: " +userId));
-	}
-
-	@Override
 	public User updateUser(UserDto user) {
-		User existingUser = readUser();
+		User existingUser = getLoggedInUser();
 		existingUser.setFirstName(user.getFirstName() != null ? user.getFirstName() : existingUser.getFirstName());
 		existingUser.setSecondName(user.getSecondName() != null ? user.getSecondName() : existingUser.getSecondName());
 		existingUser.setUsername(user.getUsername() != null ? user.getUsername() : existingUser.getUsername());
@@ -71,7 +65,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void deleteUser() {
-		User existingUser = readUser();
+		User existingUser = getLoggedInUser();
 		userRepository.delete(existingUser);
 	}
 

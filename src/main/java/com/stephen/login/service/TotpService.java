@@ -1,11 +1,15 @@
 package com.stephen.login.service;
 
+import static dev.samstevens.totp.util.Utils.getDataUriForImage;
+
+import java.util.Optional;
+
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
 import com.stephen.login.dto.MfaDto;
 import com.stephen.login.entity.User;
 import com.stephen.login.exceptions.QrCodeException;
@@ -13,28 +17,33 @@ import com.stephen.login.repository.UserRepository;
 import com.stephen.login.util.JwtTokenUtil;
 import com.stephen.login.util.StringUtil;
 
+import dev.samstevens.totp.code.CodeGenerator;
+import dev.samstevens.totp.code.CodeVerifier;
+import dev.samstevens.totp.code.DefaultCodeGenerator;
+import dev.samstevens.totp.code.DefaultCodeVerifier;
 import dev.samstevens.totp.code.HashingAlgorithm;
 import dev.samstevens.totp.exceptions.QrGenerationException;
 import dev.samstevens.totp.qr.QrData;
 import dev.samstevens.totp.qr.QrGenerator;
 import dev.samstevens.totp.qr.ZxingPngQrGenerator;
-import dev.samstevens.totp.time.*;
-import dev.samstevens.totp.code.*;
-import static dev.samstevens.totp.util.Utils.getDataUriForImage;
-
-import java.util.Optional;
+import dev.samstevens.totp.time.SystemTimeProvider;
+import dev.samstevens.totp.time.TimeProvider;
 
 @Service
 public class TotpService {
 	
-	@Autowired
 	private UserService userService;
-	@Autowired
 	private UserRepository userRepository;
-	@Autowired
 	private JwtTokenUtil jwtTokenUtil;	
-	@Autowired
 	private UserRolesDetailsService userRolesDetailsService;
+
+	public TotpService(UserService userService, UserRepository userRepository, JwtTokenUtil jwtTokenUtil,
+			UserRolesDetailsService userRolesDetailsService) {
+		this.userService = userService;
+		this.userRepository = userRepository;
+		this.jwtTokenUtil = jwtTokenUtil;
+		this.userRolesDetailsService = userRolesDetailsService;
+	}
 
 	public String generateUriForImage() {
 		
@@ -56,7 +65,7 @@ public class TotpService {
 
         try {
             imageData = generator.generate(data);
-            if(!user.getMfaEnabled()) {
+            if(Boolean.FALSE.equals(user.getMfaEnabled())) {
             	user.setMfaEnabled(Boolean.TRUE);
             	user.setTotp(secret);
             	userRepository.save(user);

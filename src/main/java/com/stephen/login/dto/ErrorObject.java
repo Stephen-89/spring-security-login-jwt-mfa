@@ -1,4 +1,4 @@
-package com.stephen.login.entity;
+package com.stephen.login.dto;
 
 import java.util.Date;
 
@@ -8,8 +8,7 @@ import lombok.Data;
 public class ErrorObject {
 	
 	private Integer statusCode;
-	
 	private String message;
-	
 	private Date timestamp;
+	
 }

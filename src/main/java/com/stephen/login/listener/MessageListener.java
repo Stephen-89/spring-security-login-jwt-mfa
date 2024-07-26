@@ -23,7 +23,6 @@ public class MessageListener {
 
     //@JmsListener(destination = Constants.USER_MESSAGE_QUEUE, containerFactory = "jmsFactory")
     public void receiveMessage(Map<String, String> message) {
-        log.info("Received <" + message + ">");
         Long id = Long.valueOf(message.get("id"));
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found for the id: " + id));
         user.setMessageCount(user.getMessageCount() + 1);

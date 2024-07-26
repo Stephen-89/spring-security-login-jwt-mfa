@@ -1,5 +1,7 @@
 package com.stephen.login.config;
 
+import java.util.Arrays;
+
 import javax.jms.ConnectionFactory;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -22,6 +24,7 @@ public class ActiveMQConfig {
 	@Bean
 	public ActiveMQConnectionFactory activeMQConnectionFactory() {
 		ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
+		activeMQConnectionFactory.setTrustedPackages(Arrays.asList("com.stephen.login"));
 		activeMQConnectionFactory.setBrokerURL(brokerUrl);
 		return activeMQConnectionFactory;
 	}

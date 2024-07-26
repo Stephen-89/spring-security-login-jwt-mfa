@@ -1,4 +1,4 @@
-package com.stephen.login.entity;
+package com.stephen.login.dto;
 
 import lombok.Data;
 

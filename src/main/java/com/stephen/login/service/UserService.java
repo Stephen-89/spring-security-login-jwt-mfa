@@ -7,8 +7,6 @@ public interface UserService {
 	
 	User createUser(UserDto user);
 	
-	User readUser();
-	
 	User updateUser(UserDto user);
 	
 	void deleteUser();
